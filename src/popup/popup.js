@@ -56,7 +56,11 @@ function addUrlToList(value) {
     const ul = document.getElementById("list-url");
     const li = document.createElement("li");
     li.className = 'list-group-item';
-    li.appendChild(document.createTextNode(value));
+    const inputElement = document.createElement("input");
+    inputElement.className = 'url-title';
+    inputElement.disabled = true;
+    inputElement.value = value;
+    li.appendChild(inputElement);
     if (value !== '') {
         ul.appendChild(li);
     }
