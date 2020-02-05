@@ -1,11 +1,14 @@
-
 let urlList = new Array();
 
 document.addEventListener('DOMContentLoaded', () => {
     getUrlsFromStorage();
     document.getElementById('save').addEventListener('click', onUrlSaved);
+    document.getElementById('open').addEventListener('click', onOpenClicked);
 });
 
+/**
+ * Add url to list on save button clicked.
+ */
 function onUrlSaved() {
     const newUrl = document.getElementById("input").value;
     urlList.push(newUrl);
@@ -15,6 +18,20 @@ function onUrlSaved() {
     })
 }
 
+/**
+ * Open tabs that are in the url list.
+ */
+function onOpenClicked() {
+    var port = chrome.extension.connect({
+        name: "Communication Popup"
+    });
+
+    port.postMessage("open");
+}
+
+/**
+ * Retrieve url list from storage.
+ */
 function getUrlsFromStorage() {
     chrome.storage.sync.get(['urls'], res => {
         if (!res) {
@@ -29,13 +46,14 @@ function getUrlsFromStorage() {
     });
 }
 
+/**
+ * Create an element for each row of url list and add click event for the row.
+ * 
+ * @param   {string}        value   String value from the input
+ */
 function addUrlToList(value) {
     document.getElementById("input").value = "";
     const ul = document.getElementById("list-url");
-    addList(ul, value);
-}
-
-function addList(ul, value) {
     const li = document.createElement("li");
     li.className = 'list-group-item';
     li.appendChild(document.createTextNode(value));
@@ -58,6 +76,11 @@ function addList(ul, value) {
     }
 }
 
+/**
+ * Remove item in the list.
+ * 
+ * @param   {number}    index   Index of the item in the list
+ */
 function removeItem(index) {
     chrome.storage.sync.get(['urls'], result => {
         urlList = result.urls;
