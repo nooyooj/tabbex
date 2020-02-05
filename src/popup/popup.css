@@ -1,0 +1,66 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    width: 300px;
+    margin: 0;
+    background: #fff;
+}
+
+html {
+    display: table;
+    margin: auto;
+}
+
+.row {
+    padding: 20px;
+}
+
+ul {
+    margin: 0;
+    padding: 0;
+}
+
+ul li {
+    position: relative;
+    margin: 1px 1px 1px 1px;
+    padding: 12px 16px 12px 20px;
+    list-style-type: none;
+    background: #fff;
+    font-size: 17px;
+    transition: 0.2s;
+}
+
+.delete-button {
+    cursor: pointer;
+    position: absolute;
+    right: 0;
+    top: 0;
+    padding: 12px 16px 12px 16px;
+}
+
+.delete-button:hover {
+    color: red;
+}
+
+.input-wrapper {
+    text-align: center;
+    overflow: hidden;
+}
+
+.input-url {
+    width: 100%;
+    font-size: 13px;
+}
+
+.input-submit {
+    margin: 10px 0px;
+    float: right;    
+    text-align: center;
+    font-size: 13px;
+}
+
+hr {
+    border: 1px solid lightgrey;
+}
