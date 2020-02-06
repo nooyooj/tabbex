@@ -53,10 +53,10 @@ function getUrlsFromStorage() {
  */
 function addUrlToList(value) {
     document.getElementById("input").value = "";
-    const ul = document.getElementById("list-url");
-    const li = document.createElement("li");
+    let ul = document.getElementById("list-url");
+    let li = document.createElement("li");
     li.className = 'list-group-item';
-    const inputElement = document.createElement("input");
+    let inputElement = document.createElement("input");
     inputElement.className = 'url-title';
     inputElement.disabled = true;
     inputElement.value = value;
@@ -64,15 +64,15 @@ function addUrlToList(value) {
     if (value !== '') {
         ul.appendChild(li);
     }
-    const span = document.createElement("span");
-    const deleteText = document.createTextNode("\u00D7");
+    let span = document.createElement("span");
+    let deleteText = document.createTextNode("\u00D7");
     span.className = "delete-button";
     span.appendChild(deleteText);
     li.appendChild(span);
     for (let i = 0; i < ul.children.length; i++) {
         (index => {
             ul.children[index].childNodes[1].onclick = () => {
-                const newIndex = urlList.findIndex(item => item === ul.children[index].firstChild.textContent.toString());
+                const newIndex = urlList.findIndex(item => item === ul.children[index].firstChild.value);
                 ul.children[index].style.display = "none";
                 removeItem(newIndex);
             }
