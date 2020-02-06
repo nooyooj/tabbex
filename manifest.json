@@ -1,6 +1,6 @@
 {
     "name": "Tabbex - Browser Extension",
-    "version": "1.0",
+    "version": "1.0.1",
     "description": "Store your favorite tabs permanently.",
     "manifest_version": 2,
     "background": {
