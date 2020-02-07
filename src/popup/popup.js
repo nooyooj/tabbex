@@ -1,7 +1,11 @@
 let urlList = new Array();
 
 document.addEventListener('DOMContentLoaded', () => {
+    const version = chrome.app.getDetails().version;
+    document.getElementById("version").innerHTML = `v${version}`;
+    
     getUrlsFromStorage();
+    
     document.getElementById('save').addEventListener('click', onUrlSaved);
     document.getElementById('open').addEventListener('click', onOpenClicked);
 });
@@ -37,7 +41,7 @@ function getUrlsFromStorage() {
         if (!res) {
             return;
         }
-        if (res.urls.length > 0) {
+        if (res.urls && res.urls.length > 0) {
             urlList = res.urls;
         }
         urlList.forEach(url => {
