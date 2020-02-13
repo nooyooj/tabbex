@@ -57,27 +57,38 @@ function getUrlsFromStorage() {
  */
 function addUrlToList(value) {
     document.getElementById("input").value = "";
+
     let ul = document.getElementById("list-url");
+
     let li = document.createElement("li");
     li.className = 'list-group-item';
+
     let inputElement = document.createElement("input");
     inputElement.className = 'url-title';
     inputElement.disabled = true;
     inputElement.value = value;
+
     li.appendChild(inputElement);
+
     if (value !== '') {
         ul.appendChild(li);
     }
+
     let span = document.createElement("span");
     let deleteText = document.createTextNode("\u00D7");
+
     span.className = "delete-button";
     span.appendChild(deleteText);
+
     li.appendChild(span);
+
     for (let i = 0; i < ul.children.length; i++) {
         (index => {
             ul.children[index].childNodes[1].onclick = () => {
                 const newIndex = urlList.findIndex(item => item === ul.children[index].firstChild.value);
+
                 ul.children[index].style.display = "none";
+                
                 removeItem(newIndex);
             }
         })(i);

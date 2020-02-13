@@ -17,6 +17,10 @@ chrome.extension.onConnect.addListener(port => {
                 }
 
                 res.urls.forEach(url => {
+                    if (!url.match(/^https?:\/\//i)) {
+                        url = 'http://' + url;
+                    }
+                    
                     window.open(url, "_blank");
                 })
             });
