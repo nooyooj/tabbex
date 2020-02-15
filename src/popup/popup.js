@@ -94,7 +94,7 @@ function disableRearrange() {
 }
 
 function handleDragStart(e) {
-    console.log('handleDragStart', e);
+    console.log('handleDragStart', e.target);
 
     dragElement = this;
     e.dataTransfer.effectAllowed = 'move';
@@ -104,30 +104,32 @@ function handleDragStart(e) {
 }
 
 function handleDragEnter(e) {
-    console.log('handleDragEnter', e);
-}
-
-function handleDragOver(e) {
-    console.log('handleDragOver', e);
+    console.log('handleDragEnter', e.target);
+    e.target.classList.add('over');
 }
 
 function handleDragLeave(e) {
-    console.log('handleDragLeave', e);
+    console.log('handleDragLeave', e.target);
+
+    e.target.classList.remove('over');
 }
 
 function handleDrop(e) {
-    console.log('handleDrop', e);
+    console.log('handleDrop', e.target);
+
+    this.classList.remove('over');
 }
 
 function handleDragEnd(e) {
-    console.log('handleDragEnd', e);
+    console.log('handleDragEnd', e.target);
+
+    // perform swap 
 }
 
 
 function dragHandlers(e) {
     e.addEventListener('dragstart', handleDragStart, false);
     e.addEventListener('dragenter', handleDragEnter, false)
-    e.addEventListener('dragover', handleDragOver, false);
     e.addEventListener('dragleave', handleDragLeave, false);
     e.addEventListener('drop', handleDrop, false);
     e.addEventListener('dragend', handleDragEnd, false);
