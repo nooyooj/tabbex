@@ -23,13 +23,35 @@ ul li {
     padding: 10px 0px;
     display: flex;
     list-style-type: none;
+    font-size: 12px;
 }
 
-ul li:before {
-    font-size: 12px;
+ul .dragElem {
+    opacity: 0.4;
+}
+
+ul .over {
+    /* border: 2px dashed #000; */
+    border-top: 2px solid blue;
+}
+
+ul .list-group-item:before {
     margin-top: 2px;
     counter-increment: section;
     content: counter(section) ".";
+    position: absolute;
+    margin-left: -10px;
+}
+
+ul .rearrange-enabled {
+    cursor: move;
+}
+
+ul .rearrange-enabled:before {
+    font-size: 12px;
+    margin-top: 2px;
+    counter-increment: section;
+    content: "\21C5";
     position: absolute;
     margin-left: -10px;
 }
@@ -49,9 +71,11 @@ ul li:before {
     color: red;
 }
 
-.input-wrapper {
+.button-wrapper {
     text-align: center;
     overflow: hidden;
+    display: flex;
+    justify-content: space-between; 
 }
 
 .input-url {
@@ -61,7 +85,7 @@ ul li:before {
 
 .input-button {
     margin: 10px 0px;
-    float: right;    
+    /* float: right;     */
     text-align: center;
     font-size: 13px;
 }
