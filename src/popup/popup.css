@@ -30,7 +30,7 @@ ul .dragElem {
     opacity: 0.4;
 }
 
-ul .over {
+ul .enter {
     /* border: 2px dashed #000; */
     border-top: 2px solid blue;
 }
@@ -85,7 +85,6 @@ ul .rearrange-enabled:before {
 
 .input-button {
     margin: 10px 0px;
-    /* float: right;     */
     text-align: center;
     font-size: 13px;
 }

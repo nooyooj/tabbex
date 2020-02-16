@@ -1,6 +1,10 @@
 let urlList = new Array();
 
 let dragElement = null;
+let startIndex = -1;
+let enterIndex = -1;
+
+let ul = document.getElementById("list-url");
 
 document.addEventListener('DOMContentLoaded', () => {
     const version = chrome.app.getDetails().version;
@@ -68,8 +72,6 @@ function onRearrangeDoneClicked() {
  * Make the list draggable
  */
 function enableRearrange() {
-    const ul = document.getElementById("list-url");
-
     for(let i = 0; i < ul.children.length; i++) {
         ul.children[i].draggable = true;
         ul.children[i].classList.remove('list-group-item');
@@ -83,8 +85,6 @@ function enableRearrange() {
  * Make the list undraggable
  */
 function disableRearrange() {
-    let ul = document.getElementById("list-url");
-
     for(let i = 0; i < ul.children.length; i++) {
         ul.children[i].draggable = false;
         ul.children[i].classList.remove('rearrange-enabled');
@@ -94,44 +94,53 @@ function disableRearrange() {
 }
 
 function handleDragStart(e) {
-    console.log('handleDragStart', e.target);
-
-    dragElement = this;
-    e.dataTransfer.effectAllowed = 'move';
-    e.dataTransfer.setData('text/html', this.outerHTML);
-  
     this.classList.add('drag-element');
+
+    dragElement = e.target;
+  
+    for(let i = 0; i < ul.children.length; i++) {
+        if(dragElement === ul.children[i]) {
+            startIndex = i;
+        }
+    }
 }
 
 function handleDragEnter(e) {
-    console.log('handleDragEnter', e.target);
-    e.target.classList.add('over');
+    e.target.classList.add('enter');
+
+    for(let i = 0; i < ul.children.length; i++) {
+        if(e.target === ul.children[i] && i !== startIndex) {
+            enterIndex = i;
+        }
+    }    
 }
 
 function handleDragLeave(e) {
-    console.log('handleDragLeave', e.target);
-
-    e.target.classList.remove('over');
+    e.target.classList.remove('enter');
 }
 
-function handleDrop(e) {
-    console.log('handleDrop', e.target);
-
-    this.classList.remove('over');
+function handleDragEnd() {
+    insertNode(startIndex, enterIndex);
 }
 
-function handleDragEnd(e) {
-    console.log('handleDragEnd', e.target);
+function insertNode(startIndex, enterIndex) {
+    let node = ul.children[startIndex];
 
-    // perform swap 
+    ul.insertBefore(node, ul.childNodes[enterIndex]);
+
+    urlList = [];
+
+    chrome.storage.sync.set({
+        'urls': urlList
+    });
+
+    resetDeleteHandler();
 }
-
 
 function dragHandlers(e) {
     e.addEventListener('dragstart', handleDragStart, false);
     e.addEventListener('dragenter', handleDragEnter, false)
     e.addEventListener('dragleave', handleDragLeave, false);
-    e.addEventListener('drop', handleDrop, false);
     e.addEventListener('dragend', handleDragEnd, false);
 }
 
@@ -160,8 +169,6 @@ function getUrlsFromStorage() {
 function addUrlToList(value) {
     document.getElementById("input").value = "";
 
-    let ul = document.getElementById("list-url");
-
     let li = document.createElement("li");
     li.className = 'list-group-item';
 
@@ -184,32 +191,7 @@ function addUrlToList(value) {
 
     li.appendChild(span);
 
-    for (let i = 0; i < ul.children.length; i++) {
-        (index => {
-            ul.children[index].childNodes[1].onclick = () => {
-                const newIndex = urlList.findIndex(item => item === ul.children[index].firstChild.value);
-
-                ul.children[index].style.display = "none";
-                
-                removeItem(newIndex);
-            }
-        })(i);
-    }
-}
-
-/**
- * Remove item in the list.
- * 
- * @param   {number}    index   Index of the item in the list
- */
-function removeItem(index) {
-    chrome.storage.sync.get(['urls'], result => {
-        urlList = result.urls;
-        urlList.splice(index, 1);
-        chrome.storage.sync.set({
-            'urls': urlList
-        })
-    })
+    resetDeleteHandler();
 }
 
 function createElement(tag, className, id, value, type) {
@@ -232,4 +214,38 @@ function removeElement(parentId, childId) {
     let child = document.getElementById(childId);
 
     parent.removeChild(child);
+}
+
+/**
+ * Remove item in the list.
+ * 
+ * @param   {number}    index   Index of the item in the list
+ */
+function removeItem(index) {
+    chrome.storage.sync.get(['urls'], result => {
+        urlList = result.urls;
+        urlList.splice(index, 1);
+        chrome.storage.sync.set({
+            'urls': urlList
+        });
+
+        resetDeleteHandler();
+    })
+}
+
+function resetDeleteHandler() {
+    for(let i = 0; i < ul.children.length; i++) {
+        urlList.push(ul.children[i].firstChild.value);
+        ul.children[i].childNodes[1].onclick = () => {
+            return false;
+        }
+    }
+
+    for (let i = 0; i < ul.children.length; i++) {
+        ul.children[i].childNodes[1].onclick = () => {
+            const newIndex = urlList.findIndex(item => item === ul.children[i].firstChild.value);
+            ul.removeChild(ul.children[i]);
+            removeItem(newIndex);
+        }
+    }
 }
