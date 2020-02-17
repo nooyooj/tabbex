@@ -24,6 +24,7 @@ function onUrlSaved() {
     const newUrl = document.getElementById("input").value;
     urlList.push(newUrl);
     addUrlToList(newUrl);
+
     chrome.storage.sync.set({
         'urls': urlList
     })
@@ -94,7 +95,7 @@ function disableRearrange() {
 }
 
 function handleDragStart(e) {
-    this.classList.add('drag-element');
+    this.classList.add('dragged-element');
 
     dragElement = e.target;
   
@@ -106,7 +107,7 @@ function handleDragStart(e) {
 }
 
 function handleDragEnter(e) {
-    e.target.classList.add('enter');
+    e.target.classList.add('entered');
 
     for(let i = 0; i < ul.children.length; i++) {
         if(e.target === ul.children[i] && i !== startIndex) {
@@ -116,10 +117,11 @@ function handleDragEnter(e) {
 }
 
 function handleDragLeave(e) {
-    e.target.classList.remove('enter');
+    e.target.classList.remove('entered');
 }
 
 function handleDragEnd() {
+    this.classList.remove('dragged-element');
     insertNode(startIndex, enterIndex);
 }
 
@@ -130,11 +132,13 @@ function insertNode(startIndex, enterIndex) {
 
     urlList = [];
 
+    resetDeleteHandler();
+
     chrome.storage.sync.set({
         'urls': urlList
     });
 
-    resetDeleteHandler();
+    
 }
 
 function dragHandlers(e) {

@@ -26,12 +26,11 @@ ul li {
     font-size: 12px;
 }
 
-ul .dragElem {
+ul .dragged-element {
     opacity: 0.4;
 }
 
-ul .enter {
-    /* border: 2px dashed #000; */
+ul .entered {
     border-top: 2px solid blue;
 }
 
