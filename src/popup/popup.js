@@ -1,4 +1,4 @@
-let urlList = new Array();
+let urlList = [];
 
 let dragElement = null;
 let startIndex = -1;
@@ -7,7 +7,7 @@ let enterIndex = -1;
 let ul = document.getElementById("list-url");
 
 document.addEventListener('DOMContentLoaded', () => {
-    const version = chrome.app.getDetails().version;
+    const version = chrome.runtime.getManifest().version;
     document.getElementById("version").innerHTML = `v${version}`;
     
     getUrlsFromStorage();
@@ -24,10 +24,10 @@ function onUrlSaved() {
     const newUrl = document.getElementById("input").value;
     urlList.push(newUrl);
     addUrlToList(newUrl);
-
     chrome.storage.sync.set({
         'urls': urlList
     })
+    resetDeleteHandler();
 }
 
 /**
@@ -125,20 +125,39 @@ function handleDragEnd() {
     insertNode(startIndex, enterIndex);
 }
 
+function move(arr, startIndex, enterIndex) {
+    while (startIndex < 0) {
+        startIndex += arr.length;
+    }
+
+    while (enterIndex < 0) {
+        enterIndex += arr.length;
+    }
+
+    if (enterIndex >= arr.length) {
+        var k = enterIndex - arr.length;
+        while ((k--) + 1) {
+            arr.push(undefined);
+        }
+    }
+
+    arr.splice(enterIndex, 0, arr.splice(startIndex, 1)[0]);  
+
+    return arr;
+}
+
 function insertNode(startIndex, enterIndex) {
     let node = ul.children[startIndex];
 
     ul.insertBefore(node, ul.childNodes[enterIndex]);
 
-    urlList = [];
+    move(urlList, startIndex, enterIndex);
 
     resetDeleteHandler();
 
     chrome.storage.sync.set({
         'urls': urlList
     });
-
-    
 }
 
 function dragHandlers(e) {
@@ -156,9 +175,11 @@ function getUrlsFromStorage() {
         if (!res) {
             return;
         }
+
         if (res.urls && res.urls.length > 0) {
             urlList = res.urls;
         }
+
         urlList.forEach(url => {
             addUrlToList(url);
         })
@@ -239,7 +260,6 @@ function removeItem(index) {
 
 function resetDeleteHandler() {
     for(let i = 0; i < ul.children.length; i++) {
-        urlList.push(ul.children[i].firstChild.value);
         ul.children[i].childNodes[1].onclick = () => {
             return false;
         }
@@ -247,9 +267,11 @@ function resetDeleteHandler() {
 
     for (let i = 0; i < ul.children.length; i++) {
         ul.children[i].childNodes[1].onclick = () => {
-            const newIndex = urlList.findIndex(item => item === ul.children[i].firstChild.value);
+            const index = urlList.findIndex(item => item === ul.children[i].firstChild.value);
+
             ul.removeChild(ul.children[i]);
-            removeItem(newIndex);
+            
+            removeItem(index);
         }
     }
 }
