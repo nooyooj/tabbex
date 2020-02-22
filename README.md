@@ -2,7 +2,7 @@
 
 Browser extension that saves your favorite URLs.
 
-# Features
+## Features
 
 - **Save** as many URLs as you want.
 - **Rearrange** URLs in order you prefer.
